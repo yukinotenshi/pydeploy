@@ -13,5 +13,6 @@ class Command:
         except AttributeError:
             command = self.cmd.split()
             process = subprocess.Popen(command, stdout=subprocess.PIPE)
-            self.out, _ = process.communicate()
+            out, _ = process.communicate()
+            self.out = str(out)
         return process.returncode == 0
