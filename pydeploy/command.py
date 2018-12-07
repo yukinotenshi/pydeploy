@@ -7,6 +7,11 @@ class Command:
         self.out = ""
 
     def execute(self):
-        process = subprocess.run(self.cmd, shell=True, stdout=subprocess.PIPE)
-        self.out = str(process.stdout)
+        try:
+            process = subprocess.run(self.cmd, shell=True, stdout=subprocess.PIPE)
+            self.out = str(process.stdout)
+        except AttributeError:
+            command = self.cmd.split()
+            process = subprocess.Popen(command, stdout=subprocess.PIPE)
+            self.out, _ = process.communicate()
         return process.returncode == 0
