@@ -1,7 +1,7 @@
+boddle==0.2.8
 bottle==0.12.15
 certifi==2018.11.29
 chardet==3.0.4
 Click==7.0
 idna==2.7
-requests==2.20.1
 urllib3==1.24.1

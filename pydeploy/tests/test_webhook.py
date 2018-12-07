@@ -1,21 +1,10 @@
-import requests
 import unittest
-import _thread
-import pydeploy.config as config
+from boddle import boddle
 from pydeploy.util import generate_random_string
-config.route = generate_random_string()
-
-from pydeploy.webhook import app
+from pydeploy.webhook import deploy
 
 
 class TestWebhook(unittest.TestCase):
-    def setUp(self):
-        kwargs = {
-            "host": "localhost",
-            "port": 9999
-        }
-        _thread.start_new_thread(app.run, (), kwargs)
-
     def test_webhook(self):
         payload = {
             "ref": generate_random_string(),
@@ -29,5 +18,5 @@ class TestWebhook(unittest.TestCase):
             payload['pusher']['name'],
             payload['pusher']['email'],
         )
-        response = requests.post('http://localhost:9999/' + config.route, json=payload)
-        self.assertEqual(response.text, expected)
+        with boddle(json=payload):
+            self.assertEqual(deploy(), expected)
