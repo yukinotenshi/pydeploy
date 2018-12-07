@@ -11,13 +11,23 @@ class Command:
 
     def execute(self):
         command = self.cmd.split()
-        self.process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        out, err = self.process.communicate()
-        self.out, self.err = str(out), str(err)
+        try:
+            self.process = subprocess.run(
+                self.cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            self.out = str(self.process.stdout)
+            self.err = str(self.process.stderr)
+        except AttributeError:
+            self.process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            out, err = self.process.communicate()
+            self.out, self.err = str(out), str(err)
         return self.process.returncode == 0
 
     def kill(self):
