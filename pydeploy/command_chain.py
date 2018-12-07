@@ -1,5 +1,6 @@
 import json
 from pydeploy.command import Command
+from pydeploy.notifier import NotifierFactory
 
 
 class CommandChain:
@@ -22,7 +23,8 @@ class CommandChain:
         commands += data['pre_script']
         commands += ['git pull {} {}'.format(data['remote'], data['branch'])]
         commands += data['post_script']
-        # cls.notifier = NotifierFactory(data['notifier'])
+        if 'notifier' in data:
+            cls.notifier = NotifierFactory.load(data['notifier'])
 
         for c in commands:
             cls.instance.add_command(c)
@@ -35,6 +37,5 @@ class CommandChain:
     def execute(self):
         for c in self.commands:
             executed = c.execute()
-            if not executed:
-                # notify
-                pass
+            if not executed and self.notifier:
+                self.notifier.send(c.out)

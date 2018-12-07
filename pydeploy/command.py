@@ -1,3 +1,4 @@
+import psutil
 import subprocess
 
 
@@ -6,24 +7,23 @@ class Command:
         self.cmd = cmd_str
         self.out = ""
         self.err = ""
+        self.process = None
 
     def execute(self):
-        try:
-            process = subprocess.run(
-                self.cmd,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            self.out = str(process.stdout)
-            self.err = str(process.stderr)
-        except AttributeError:
-            command = self.cmd.split()
-            process = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            out, err = process.communicate()
-            self.out, self.err = str(out), str(err)
-        return process.returncode == 0
+        command = self.cmd.split()
+        self.process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        out, err = self.process.communicate()
+        self.out, self.err = str(out), str(err)
+        return self.process.returncode == 0
+
+    def kill(self):
+        if self.process is None:
+            return
+        process = psutil.Process(self.process.pid)
+        for proc in process.children(recursive=True):
+            proc.kill()
+        process.kill()
