@@ -102,3 +102,21 @@ class TestCommandChain(unittest.TestCase):
         self.assertIn(self.second_out, chain.commands[1].out)
         self.assertIn(self.first_out, chain.commands[3].out)
         self.assertIn(self.second_out, chain.commands[4].out)
+
+    def test_notifier_loaded(self):
+        data = {
+            'pre_script': [],
+            'post_script': [],
+            'remote': 'origin',
+            'branch': 'master',
+            'notifier': {
+                'type': 'discord',
+                'receiver': 'something'
+            }
+        }
+
+        with open(self.filename, 'w') as f:
+            json.dump(data, f)
+
+        chain = CommandChain.load_from_config(self.filename)
+        self.assertIsNotNone(chain.notifier)

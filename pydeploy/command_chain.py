@@ -25,7 +25,7 @@ class CommandChain:
         commands += data['post_script']
         if 'notifier' in data:
             notifier_class = NotifierFactory.load(data['notifier']['type'])
-            cls.notifier = notifier_class(data['notifier']['receiver'])
+            cls.instance.notifier = notifier_class(data['notifier']['receiver'])
 
         for c in commands:
             cls.instance.add_command(c)
