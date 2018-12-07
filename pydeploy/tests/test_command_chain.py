@@ -5,7 +5,7 @@ from pydeploy.util import generate_random_string
 from pydeploy.command_chain import CommandChain
 
 
-class TestCommand(unittest.TestCase):
+class TestCommandChain(unittest.TestCase):
     def setUp(self):
         self.filename = generate_random_string()
         self.first_out = generate_random_string()

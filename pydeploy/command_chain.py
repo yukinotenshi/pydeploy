@@ -24,7 +24,8 @@ class CommandChain:
         commands += ['git pull {} {}'.format(data['remote'], data['branch'])]
         commands += data['post_script']
         if 'notifier' in data:
-            cls.notifier = NotifierFactory.load(data['notifier'])
+            notifier_class = NotifierFactory.load(data['notifier']['type'])
+            cls.notifier = notifier_class(data['notifier']['receiver'])
 
         for c in commands:
             cls.instance.add_command(c)
